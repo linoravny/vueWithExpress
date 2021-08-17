@@ -7,7 +7,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Product',
-    // which is lazy-loaded when the route is visited.
+    // lazy-loaded
     component: () => import('../views/Product.vue')
   }
 ]
