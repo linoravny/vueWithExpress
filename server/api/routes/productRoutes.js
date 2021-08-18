@@ -16,4 +16,7 @@ module.exports = function(app) {
   app.route('/cogs')
   .post(controller.update_product)
 
+  app.route('/countries')
+  .get(controller.get_countries)
+
 };
