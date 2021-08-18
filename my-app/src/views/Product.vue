@@ -7,42 +7,67 @@
         :title="item.productName"
         tag="article"
         class="mb-4">
+        <!-- display mode -->
         <b-card-text v-if="!item.editMode">
             <div>Manufacturing Cost: {{item.cogs.unitManufacturingCost}}</div>
             <div>ShipmentUnit Cost: {{item.cogs.shipmentUnitCost}}</div>
             <div>MonthlyAdvertisment Cost: {{item.cogs.monthlyAdvertismentCost}}</div>
-            <div>Manufacturing Country: {{item.cogs.manufacturingCountry}}</div>
+            <div>Manufacturing Country: {{item.displayCountry}}</div>
         </b-card-text>
-
+        <!-- edit mode -->
         <b-card-text v-if="item.editMode">
-            <div>
-              <b-form-input
-                v-model="item.unitManufacturingCost"
-                placeholder="Enter Unit Manufacturing Cost">
+            <b-form-group
+              id="fieldset-horizontal"
+              label-cols-sm="6"
+              label="Enter Unit Manufacturing Cost:"
+              label-for="input-unitManufacturingCost"
+            >
+              <b-form-input id="input-unitManufacturingCost"
+                placeholder="Enter Unit Manufacturing Cost"
+                v-model="item.cogs.unitManufacturingCost">
               </b-form-input>
-            </div>
-            <div>
-              <b-form-input
-                v-model="item.shipmentUnitCost"
-                placeholder="Enter Shipment Unit Cost">
+            </b-form-group>
+
+            <b-form-group
+              id="fieldset-horizontal"
+              label-cols-sm="6"
+              label="Enter Shipment Unit Cost:"
+              label-for="input-shipmentUnitCost"
+            >
+              <b-form-input id="input-shipmentUnitCost"
+                placeholder="Enter Shipment Unit Cost"
+                v-model="item.cogs.shipmentUnitCost">
               </b-form-input>
-            </div>
-            <div>
-              <b-form-input
-                v-model="item.monthlyAdvertismentCost"
-                placeholder="Enter Monthly Advertisment Cost">
+            </b-form-group>
+
+            <b-form-group
+              id="fieldset-horizontal"
+              label-cols-sm="6"
+              label="Enter Monthly Advertisment Cost:"
+              label-for="input-monthlyAdvertismentCost"
+            >
+              <b-form-input id="input-monthlyAdvertismentCost"
+                placeholder="Enter Monthly Advertisment Cost"
+                v-model="item.cogs.monthlyAdvertismentCost">
               </b-form-input>
-            </div>
-             <div>
-              <b-form-select class="mb-2" v-model="item.manufacturingCountry"
-              :options="countries"
-              value-field="code"
-              text-field="name">
+            </b-form-group>
+
+            <b-form-group
+              id="fieldset-horizontal"
+              label-cols-sm="6"
+              label="Select A Manufacturing Country:"
+              label-for="input-monthlyAdvertismentCost"
+            >
+              <b-form-select class="mb-2" v-model="item.cogs.manufacturingCountry"
+                :options="countries"
+                value-field="code"
+                text-field="name">
                 <template #first>
                   <b-form-select-option :value="null" disabled>-- Please select a country --</b-form-select-option>
                 </template>
               </b-form-select>
-            </div>
+            </b-form-group>
+
         </b-card-text>
 
         <b-button v-if="!item.editMode"
@@ -53,6 +78,11 @@
         <b-button v-if="item.editMode"
           v-on:click="editProduct(index, item)"
           variant="outline-primary">Edit Product
+        </b-button>
+
+         <b-button v-if="item.editMode"
+          v-on:click="item.editMode = false"
+          variant="primary">Back
         </b-button>
       </b-card>
     </div>
@@ -71,24 +101,36 @@ export default {
       hasError: false,
     }
   },
-  // filters: {
-    // currencydecimal (value) {
-    //   return value.toFixed(2)
-    // }
-  // },
+  filters: {
+    currencydecimal (value) {
+      return value.toFixed(2)
+    },
+    countryForDisplay(value) {
+      if (!value || !this.countries || this.countries.length === 0) return '';
+      value = value.toString();
+      console.log(value);
+      console.log(this.countries[0]);
+      return this.countries[0].name;
+    }
+  },
   methods: {
+    getCountryObj: function(key) {
+      return this.countries.find((elem) => {
+        if(elem.code === key) return elem;
+      }).name;
+    },
     displayEditMode: function (i) {
       this.products[i].editMode = true;
     },
     editProduct: function (i,item) {
       console.log('editProduct()');
-      // this.products[i].editMode = false;
+
       const product = {
         id: item.id,
-        unitManufacturingCost: item.unitManufacturingCost,
-        shipmentUnitCost: item.shipmentUnitCost,
-        monthlyAdvertismentCost: item.monthlyAdvertismentCost,
-        manufacturingCountry: item.manufacturingCountry
+        unitManufacturingCost: item.cogs.unitManufacturingCost,
+        shipmentUnitCost: item.cogs.shipmentUnitCost,
+        monthlyAdvertismentCost: item.cogs.monthlyAdvertismentCost,
+        manufacturingCountry: item.cogs.manufacturingCountry
       };
       axios.post("http://localhost:3000/cogs", product)
         .then(response => {
@@ -99,6 +141,7 @@ export default {
             this.products[i].cogs.shipmentUnitCost = response.data.cogs.shipmentUnitCost;
             this.products[i].cogs.monthlyAdvertismentCost = response.data.cogs.monthlyAdvertismentCost;
             this.products[i].cogs.manufacturingCountry = response.data.cogs.manufacturingCountry;
+            this.products[i].displayCountry = this.getCountryObj(response.data.cogs.manufacturingCountry);
           }
         }).catch(errors => {
           console.log(errors);
@@ -108,18 +151,20 @@ export default {
             console.log('editProduct finally');
             this.loading = false;
       });
-    }
+    },
+
   },
   mounted () {
     this.loading = true;
     const requestOne = axios.get('http://localhost:3000/products');
     const requestTwo = axios.get('http://localhost:3000/countries');
     axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
+      this.countries = responses[1].data;
       this.products = responses[0].data.map(product => {
         product.editMode = false;
+        product.displayCountry = this.getCountryObj(product.cogs.manufacturingCountry);
         return product;
       });
-      this.countries = responses[1].data;
       console.log(this.products);
       console.log(this.countries);
     })).catch(errors => {

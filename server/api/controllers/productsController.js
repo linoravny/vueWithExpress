@@ -5,12 +5,12 @@ const path = require('path');
 let countries = [];
 let products = [];
 
-//only the firt time
+//only the first time
 exports.init = (req,res) => {
   console.log("init");
 
-  countries = fs.readFileSync(path.resolve(__dirname, '../stabs/countries.json'));
-  //countries = JSON.parse(allCountries);
+  let allCountries = fs.readFileSync(path.resolve(__dirname, '../stabs/countries.json'));
+  countries = JSON.parse(allCountries);
 
   let allProducts = fs.readFileSync(path.resolve(__dirname, '../stabs/products.json'));
   let productsDB = _initProductState(JSON.parse(allProducts));
@@ -69,6 +69,7 @@ exports.update_product = function(req, res) {
 const _initProductState = (arr)=> {
   console.log("initProductState...");
   let hash = {};
+  console.log(countries);
   arr.forEach(item => {
     hash[item.id] = {
       "productName": item.productName,
@@ -76,7 +77,7 @@ const _initProductState = (arr)=> {
         "unitManufacturingCost": Math.floor(Math.random() * 1000) + 1,
         "shipmentUnitCost": Math.floor(Math.random() * 1000) + 1,
         "monthlyAdvertismentCost": Math.floor(Math.random() * 1000) + 1,
-        "manufacturingCountry": countries[0].code,
+        "manufacturingCountry": countries[Math.floor(Math.random()*countries.length)].code
       }
     }
   });
