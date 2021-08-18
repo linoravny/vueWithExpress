@@ -3,11 +3,10 @@
     <h1>Products</h1>
 
     <div>
-      <b-card v-for="(item,index) in products" :key="index"
+      <b-card v-for="(item,index) in products" :key="item.id"
         :title="item.productName"
         tag="article"
         class="mb-4">
-        <div>{{item.editMode}}</div>
         <b-card-text v-if="!item.editMode">
             <div>Manufacturing Cost: {{item.cogs.unitManufacturingCost}}</div>
             <div>ShipmentUnit Cost: {{item.cogs.shipmentUnitCost}}</div>
@@ -83,7 +82,7 @@ export default {
     },
     editProduct: function (i,item) {
       console.log('editProduct()');
-      this.products[i].editMode = false;
+      // this.products[i].editMode = false;
       const product = {
         id: item.id,
         unitManufacturingCost: item.unitManufacturingCost,
@@ -94,6 +93,13 @@ export default {
       axios.post("http://localhost:3000/cogs", product)
         .then(response => {
           console.log(response);
+          this.products[i].editMode = false;
+          if(response.data) {
+            this.products[i].cogs.unitManufacturingCost = response.data.cogs.unitManufacturingCost;
+            this.products[i].cogs.shipmentUnitCost = response.data.cogs.shipmentUnitCost;
+            this.products[i].cogs.monthlyAdvertismentCost = response.data.cogs.monthlyAdvertismentCost;
+            this.products[i].cogs.manufacturingCountry = response.data.cogs.manufacturingCountry;
+          }
         }).catch(errors => {
           console.log(errors);
           this.hasError = true;

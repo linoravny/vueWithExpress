@@ -13,4 +13,4 @@ run: $ npm install - for install node_modules folder
 
 ## run server
 
-$ npm run start; (http://localhost:3000/)
+$ npm run start; (http://localhost:8080/)
