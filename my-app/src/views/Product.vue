@@ -9,9 +9,9 @@
         class="mb-4">
         <!-- display mode -->
         <b-card-text v-if="!item.editMode">
-            <div>Manufacturing Cost: {{item.cogs.unitManufacturingCost}}</div>
-            <div>ShipmentUnit Cost: {{item.cogs.shipmentUnitCost}}</div>
-            <div>MonthlyAdvertisment Cost: {{item.cogs.monthlyAdvertismentCost}}</div>
+            <div>Manufacturing Cost: {{item.cogs.unitManufacturingCost | toCurrency}}</div>
+            <div>ShipmentUnit Cost: {{item.cogs.shipmentUnitCost | toCurrency}}</div>
+            <div>MonthlyAdvertisment Cost: {{item.cogs.monthlyAdvertismentCost | toCurrency}}</div>
             <div>Manufacturing Country: {{item.displayCountry}}</div>
         </b-card-text>
         <!-- edit mode -->
@@ -105,19 +105,27 @@ export default {
     currencydecimal (value) {
       return value.toFixed(2)
     },
-    countryForDisplay(value) {
-      if (!value || !this.countries || this.countries.length === 0) return '';
-      value = value.toString();
-      console.log(value);
-      console.log(this.countries[0]);
-      return this.countries[0].name;
+    toCurrency(value) {
+      if (typeof value !== "number") {
+        return value;
+      }
+      var formatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 0
+      });
+      return formatter.format(value);
     }
   },
   methods: {
     getCountryObj: function(key) {
-      return this.countries.find((elem) => {
-        if(elem.code === key) return elem;
-      }).name;
+      let ret;
+      if(key) {
+        ret = this.countries.find((elem) => {
+          if(elem.code === key) return elem;
+        });
+      }
+      return (ret && ret.name) ? ret.name : ''
     },
     displayEditMode: function (i) {
       this.products[i].editMode = true;

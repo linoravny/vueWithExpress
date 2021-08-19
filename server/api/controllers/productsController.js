@@ -45,9 +45,9 @@ exports.update_product = function(req, res) {
   let id = req.body.id
 
   productsFromDB[id].cogs = {
-    "unitManufacturingCost": req.body.unitManufacturingCost,
-    "shipmentUnitCost": req.body.shipmentUnitCost,
-    "monthlyAdvertismentCost": req.body.monthlyAdvertismentCost,
+    "unitManufacturingCost": Number(req.body.unitManufacturingCost),
+    "shipmentUnitCost": Number(req.body.shipmentUnitCost),
+    "monthlyAdvertismentCost": Number(req.body.monthlyAdvertismentCost),
     "manufacturingCountry": req.body.manufacturingCountry
   }
   let jsonContent = JSON.stringify(productsFromDB);
