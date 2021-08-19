@@ -1,7 +1,6 @@
 <template>
-  <div class='product'>
-    <h1>Products</h1>
-
+  <div id='product'>
+    <h1 class="title">{{title}}</h1>
     <div>
       <b-card v-for="(item,index) in products" :key="item.id"
         :title="item.productName"
@@ -92,9 +91,11 @@
 <script>
 import axios from 'axios'
 
-export default {
+export default  {
+  name: 'Product',
    data () {
     return {
+      title: 'Product Page',
       products: [],
       countries: [],
       loading: true,
@@ -118,6 +119,9 @@ export default {
     }
   },
   methods: {
+    sum: function(a,b) {
+      return a + b;
+    },
     getCountryObj: function(key) {
       let ret;
       if(key) {
