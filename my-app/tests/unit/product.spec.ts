@@ -1,8 +1,9 @@
-import { shallowMount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import Product from '@/components/Product.vue'
 import axios from 'axios'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
+import { nextTick } from 'vue/types/umd'
 
 Vue.use(BootstrapVue)
 
@@ -273,7 +274,7 @@ const mockCountriesList = [
 
 let wrapper:any;
 beforeEach(async () => {
-  wrapper = shallowMount(Product, {
+  wrapper = mount(Product, {
     data: function() {
         return {
           products: null,
@@ -297,26 +298,27 @@ afterEach(() => {
 
 describe('Product',  () => {
 
-  it('click display edit mode button delete and add elements to dom', async () => {
+  it('click display edit mode button remove and add elements to the dom', async () => {
     await wrapper.find('.btnDisplayEditMode0').trigger('click')
     // await Vue.nextTick();
-    expect(wrapper.classes('btnDisplayEditMode0')).toBe(false)
-    expect(wrapper.classes('cardReadOnly0')).toBe(false)
-    // expect(wrapper.classes('cardForm0')).toBe(true)
-    // expect(wrapper.classes('btnEdit0')).toBe(true)
-    // expect(wrapper.classes('btnBackToReadOnly0')).toBe(true)
+    expect(wrapper.find('.btnDisplayEditMode0').exists()).toBe(false)
+    expect(wrapper.find('.cardReadOnly0').exists()).toBe(false)
+
+    expect(wrapper.find('.cardForm0').exists()).toBe(true)
+    expect(wrapper.find('.btnEdit0').exists()).toBe(true)
+    expect(wrapper.find('.btnBackToReadOnly0').exists()).toBe(true)
   })
 
-  it('post product ', async () => {
-    await wrapper.find('.btnEdit0').trigger('click')
-    // expect(axios.get).toHaveBeenCalledTimes(2)
+  // it('post product ', async () => {
+  //   await wrapper.find('.btnEdit0').trigger('click')
+  //   // expect(axios.get).toHaveBeenCalledTimes(2)
 
-    // const products = wrapper.findAll('[data-test="products"]')
+  //   // const products = wrapper.findAll('[data-test="products"]')
 
-    // expect(products).toHaveLength(2)
-    // expect(axios.get).toHaveBeenCalledWith('http://localhost:3000')
+  //   // expect(products).toHaveLength(2)
+  //   // expect(axios.get).toHaveBeenCalledWith('http://localhost:3000')
 
-  })
+  // })
 
 })
 

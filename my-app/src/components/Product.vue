@@ -76,7 +76,7 @@
 
         <b-button :class="[`btnDisplayEditMode${index}`]"
           v-if="!item.editMode"
-          v-on:click="displayEditMode(index)"
+          v-on:click="item.editMode = !item.editMode"
           variant="outline-primary">Display Edit Mode
         </b-button>
 
