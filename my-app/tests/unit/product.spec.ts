@@ -331,7 +331,7 @@ describe('Product',  () => {
       }
 
     };
-    wrapper.vm.editProduct(0,postProductItem);x
+    wrapper.vm.editProduct(0,postProductItem);
     // console.log(JSON.stringify(postProductItem));
   })
 
