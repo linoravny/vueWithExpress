@@ -7,7 +7,7 @@
         data-test="products"
         tag="article"
         class="mb-4">
-        <!-- display mode -->
+        <!-- read only mode -->
         <b-card-text
           :class="[`cardReadOnly${index}`]"
           v-if="!item.editMode">
@@ -74,12 +74,14 @@
 
         </b-card-text>
 
+        <!--btn change to edit mode-->
         <b-button :class="[`btnDisplayEditMode${index}`]"
           v-if="!item.editMode"
           v-on:click="item.editMode = !item.editMode"
           variant="outline-primary">Display Edit Mode
         </b-button>
 
+        <!--btn edit product post request-->
         <b-button
          :class="[`btnEdit${index}`]"
           v-if="item.editMode"
@@ -87,12 +89,14 @@
           variant="outline-primary">Edit Product
         </b-button>
 
-         <b-button
+        <!--btn back to read only without do nothing-->
+        <b-button
           :class="[`btnBackToReadOnly${index}`]"
           v-if="item.editMode"
           v-on:click="item.editMode = false"
           variant="primary">Back
         </b-button>
+
       </b-card>
     </div>
   </div>
@@ -102,7 +106,7 @@
 import axios from 'axios'
 
 export default  {
-  // name: 'Product',
+
    data () {
     return {
       title: 'Product Page',
@@ -135,11 +139,8 @@ export default  {
       }
       return (ret && ret.name) ? ret.name : ''
     },
-    displayEditMode: function (i) {
-      this.products[i].editMode = true;
-    },
     editProduct: function (i,item) {
-      console.log('editProduct()');
+      console.log(`editProduct() index: ${i}, id: ${item.id}`);
 
       const product = {
         id: item.id,
@@ -148,6 +149,7 @@ export default  {
         monthlyAdvertismentCost: item.cogs.monthlyAdvertismentCost,
         manufacturingCountry: item.cogs.manufacturingCountry
       };
+
       axios.post("http://localhost:3000/cogs", product)
         .then(response => {
           console.log(response);

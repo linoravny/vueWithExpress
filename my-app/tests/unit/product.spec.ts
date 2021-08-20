@@ -25,7 +25,8 @@ const mockProductsList = [
     },
     "editMode":false
   },
-];
+]
+
 const mockCountriesList = [
   { "name": "China", "code": "CN" },
   { "name": "Afghanistan", "code": "AF" },
@@ -300,7 +301,7 @@ describe('Product',  () => {
 
   it('click display edit mode button remove and add elements to the dom', async () => {
     await wrapper.find('.btnDisplayEditMode0').trigger('click')
-    // await Vue.nextTick();
+
     expect(wrapper.find('.btnDisplayEditMode0').exists()).toBe(false)
     expect(wrapper.find('.cardReadOnly0').exists()).toBe(false)
 
@@ -309,14 +310,33 @@ describe('Product',  () => {
     expect(wrapper.find('.btnBackToReadOnly0').exists()).toBe(true)
   })
 
-  // it('post product ', async () => {
-  //   await wrapper.find('.btnEdit0').trigger('click')
-  //   // expect(axios.get).toHaveBeenCalledTimes(2)
+  it('get country name by key', async () => {
+    let countryName;
+    countryName = wrapper.vm.getCountryObj('AF');
+    countryName = wrapper.vm.getCountryObj();
+    countryName = wrapper.vm.getCountryObj(2);
+    countryName = wrapper.vm.getCountryObj(null);
+    // console.log(`country name: ${countryName}`);
+  })
 
-  //   // const products = wrapper.findAll('[data-test="products"]')
+  it('post product', async () => {
+    //check object not form valid, null, empty properties, null
+    const postProductItem = {
+      id: 'B08QPPGNNZ',
+      cogs: {
+        unitManufacturingCost: 11,
+        shipmentUnitCost: 22,
+        monthlyAdvertismentCost: 33,
+        manufacturingCountry: 'AS'
+      }
 
-  //   // expect(products).toHaveLength(2)
-  //   // expect(axios.get).toHaveBeenCalledWith('http://localhost:3000')
+    };
+    wrapper.vm.editProduct(0,postProductItem);x
+    // console.log(JSON.stringify(postProductItem));
+  })
+
+    // it('filter number currency', async () => {
+    //check number type, falsy(0,null, undefined,...)
 
   // })
 
