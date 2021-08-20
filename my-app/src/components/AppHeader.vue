@@ -12,6 +12,11 @@ export default  {
     return {
       title: 'Vue App With Node Express',
     }
+  },
+  methods: {
+    sum() {
+      return true
+    }
   }
 }
 </script>

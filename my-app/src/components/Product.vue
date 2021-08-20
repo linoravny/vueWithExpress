@@ -4,17 +4,22 @@
     <div>
       <b-card v-for="(item,index) in products" :key="item.id"
         :title="item.productName"
+        data-test="products"
         tag="article"
         class="mb-4">
         <!-- display mode -->
-        <b-card-text v-if="!item.editMode">
+        <b-card-text
+          :class="[`cardReadOnly${index}`]"
+          v-if="!item.editMode">
             <div>Manufacturing Cost: {{item.cogs.unitManufacturingCost | toCurrency}}</div>
             <div>ShipmentUnit Cost: {{item.cogs.shipmentUnitCost | toCurrency}}</div>
             <div>MonthlyAdvertisment Cost: {{item.cogs.monthlyAdvertismentCost | toCurrency}}</div>
             <div>Manufacturing Country: {{item.displayCountry}}</div>
         </b-card-text>
         <!-- edit mode -->
-        <b-card-text v-if="item.editMode">
+        <b-card-text
+          :class="[`cardForm${index}`]"
+          v-if="item.editMode">
             <b-form-group
               id="fieldset-horizontal"
               label-cols-sm="6"
@@ -69,17 +74,22 @@
 
         </b-card-text>
 
-        <b-button v-if="!item.editMode"
+        <b-button :class="[`btnDisplayEditMode${index}`]"
+          v-if="!item.editMode"
           v-on:click="displayEditMode(index)"
           variant="outline-primary">Display Edit Mode
         </b-button>
 
-        <b-button v-if="item.editMode"
+        <b-button
+         :class="[`btnEdit${index}`]"
+          v-if="item.editMode"
           v-on:click="editProduct(index, item)"
           variant="outline-primary">Edit Product
         </b-button>
 
-         <b-button v-if="item.editMode"
+         <b-button
+          :class="[`btnBackToReadOnly${index}`]"
+          v-if="item.editMode"
           v-on:click="item.editMode = false"
           variant="primary">Back
         </b-button>
@@ -92,7 +102,7 @@
 import axios from 'axios'
 
 export default  {
-  name: 'Product',
+  // name: 'Product',
    data () {
     return {
       title: 'Product Page',
@@ -103,9 +113,6 @@ export default  {
     }
   },
   filters: {
-    currencydecimal (value) {
-      return value.toFixed(2)
-    },
     toCurrency(value) {
       if (typeof value !== "number") {
         return value;
@@ -119,9 +126,6 @@ export default  {
     }
   },
   methods: {
-    sum: function(a,b) {
-      return a + b;
-    },
     getCountryObj: function(key) {
       let ret;
       if(key) {
@@ -164,29 +168,36 @@ export default  {
             this.loading = false;
       });
     },
-
   },
-  mounted () {
+  mounted: async function() {
     this.loading = true;
-    const requestOne = axios.get('http://localhost:3000/products');
-    const requestTwo = axios.get('http://localhost:3000/countries');
-    axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
-      this.countries = responses[1].data;
-      this.products = responses[0].data.map(product => {
-        product.editMode = false;
-        product.displayCountry = this.getCountryObj(product.cogs.manufacturingCountry);
-        return product;
-      });
-      console.log(this.products);
-      console.log(this.countries);
-    })).catch(errors => {
-      console.log(errors);
+
+    try{
+      let resProducts = await axios.get('http://localhost:3000/products');
+      let resCountries = await axios.get('http://localhost:3000/countries');
+
+      this.loading = false;
+
+      if(resCountries && resCountries.data) {
+        this.countries = resCountries.data
+      }
+
+      if(resProducts && resProducts.data){
+        this.products = resProducts.data.map(product => {
+          product.editMode = false;
+          product.displayCountry = this.getCountryObj(product.cogs.manufacturingCountry);
+          return product;
+        });
+      }
+
+      console.log(`products: ${JSON.stringify(this.products)}`);
+      console.log(`countries: ${JSON.stringify(this.countries)}`);
+
+    } catch(error) {
+      this.loading = false;
+      console.log(error);
       this.hasError = true;
-    })
-    .finally(() => {
-        console.log('init finally');
-        this.loading = false;
-    });
+    }
   }
 }
 </script>
