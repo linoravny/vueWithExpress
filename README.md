@@ -46,7 +46,7 @@ For each product - display + edit
 
 # data structure
 
-1. DB (file system): hash
+1. DB (file system: productsDataBase.json) - Hash
 
 - {
   "B08QPPGNNZ":{"productName":"MediChair Kneeling Chair",
@@ -54,7 +54,7 @@ For each product - display + edit
   }
   }
 
-2. the server return to client a data os array of objects
+2. the server return to client a data of array of objects
 
 # Server API
 

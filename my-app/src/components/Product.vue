@@ -129,7 +129,6 @@ export default  {
   },
   filters: {
     toCurrency(value) {
-      console.log(`filter toCurrency value:${value}`)
       if (!value && typeof value !== "number") {
         return value;
       }
