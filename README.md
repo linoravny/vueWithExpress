@@ -1,14 +1,14 @@
 # Vue With Express
 
-Vue JS framework With Node Express For Server.
+Vue framework With Node Express For Server.
 
 - this app incudes test with Jest
 
-# Required installation:
+# Required installation
 
 1. Node JS : https://nodejs.org/en/download/ (install npm packege by default)
 
-# Getting started - only the first time:
+# Getting started - only the first time
 
 1. open terminal at folder 'my-app', run:$ npm install
 2. open terminal at folder 'server', run: $ npm install
@@ -37,11 +37,12 @@ Vue JS framework With Node Express For Server.
 single page application that lets sellers fill their COGS (cost of goods) of each product.
 The app display the seller’s products, and once the seller selects a product from the list, the seller will be shown a form page where the seller can update COGS fields of the selected product.
 
-For each product - display
-● Unit manufacturing cost (currency)
-● Shipment unit cost (currency)
-● Monthly advertising cost (currency)
-● Manufacturing country (dropdown)
+For each product - display + edit
+
+- Unit manufacturing cost (currency)
+- Shipment unit cost (currency)
+- Monthly advertising cost (currency)
+- Manufacturing country (dropdown)
 
 # Server API
 
