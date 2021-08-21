@@ -1,9 +1,8 @@
-import { mount, shallowMount } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import Product from '@/components/Product.vue'
 import axios from 'axios'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
-import { nextTick } from 'vue/types/umd'
 
 Vue.use(BootstrapVue)
 
@@ -347,14 +346,6 @@ describe('Product',  () => {
     };
     wrapper.vm.editProduct(0,postProductItem);
   })
-
-  // it('filter number by currency for display mode', async () => {
-  //   // check number type, falsy(0,null, undefined,...)
-  //   let numberCurrency;
-  //   // numberCurrency =  wrapper.vm.toCurrency(40);
-  //   // console.log(`number with currency filter: ${numberCurrency}`);
-
-  // })
 
 })
 

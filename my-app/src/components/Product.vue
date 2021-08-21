@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid="sm" class='product-page'>
+  <b-container fluid="sm">
     <h1 class="title">{{title}}</h1>
     <b-row>
       <b-col>
@@ -129,7 +129,8 @@ export default  {
   },
   filters: {
     toCurrency(value) {
-      if (typeof value !== "number") {
+      console.log(`filter toCurrency value:${value}`)
+      if (!value && typeof value !== "number") {
         return value;
       }
       var formatter = new Intl.NumberFormat('en-US', {

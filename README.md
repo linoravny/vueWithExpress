@@ -44,6 +44,18 @@ For each product - display + edit
 - Monthly advertising cost (currency)
 - Manufacturing country (dropdown)
 
+# data structure
+
+1. DB (file system): hash
+
+- {
+  "B08QPPGNNZ":{"productName":"MediChair Kneeling Chair",
+  "cogs":{"unitManufacturingCost":61,"shipmentUnitCost":789,"monthlyAdvertismentCost":967,"manufacturingCountry":"CO"}
+  }
+  }
+
+2. the server return to client a data os array of objects
+
 # Server API
 
 - GET - /products - retrieve a list of seller products
@@ -52,7 +64,8 @@ For each product - display + edit
 
 # Test with jest API
 
+with mock data for country + products array
+
 1. remove and add elements to the dom while chage display mode (form/read only)
 2. get country name by key
 3. post product with many requests
-4. check currency filter
