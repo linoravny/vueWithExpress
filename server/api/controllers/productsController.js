@@ -41,27 +41,32 @@ exports.get_countries = function(req, res) {
 exports.update_product = function(req, res) {
   console.log(`update_product... req.body: ${req.body}`);
 
-  let productsFromDB = _getProductsFromDB();
-  let id = req.body.id
+  if(!_isValidProductReq(req)) {
+    console.log('product req post data not valid!');
+    throw new Error('req not valid') 
+  } else {
+    let productsFromDB = _getProductsFromDB();
+    let id = req.body.id
 
-  productsFromDB[id].cogs = {
-    "unitManufacturingCost": Number(req.body.unitManufacturingCost),
-    "shipmentUnitCost": Number(req.body.shipmentUnitCost),
-    "monthlyAdvertismentCost": Number(req.body.monthlyAdvertismentCost),
-    "manufacturingCountry": req.body.manufacturingCountry
-  }
-  let jsonContent = JSON.stringify(productsFromDB);
+    productsFromDB[id].cogs = {
+      "unitManufacturingCost": Number(req.body.unitManufacturingCost),
+      "shipmentUnitCost": Number(req.body.shipmentUnitCost),
+      "monthlyAdvertismentCost": Number(req.body.monthlyAdvertismentCost),
+      "manufacturingCountry": req.body.manufacturingCountry
+    }
+    let jsonContent = JSON.stringify(productsFromDB);
 
-  try {
-    const data =  fs.writeFileSync(path.resolve(__dirname, '../stabs/productsDataBase.json'),jsonContent);
-    console.log(`file written successfully, data: ${data}`);
-    let productsFromDB = _getProductsFromDB(); 
-    let diff = { id:id,...productsFromDB[id], editMode:false};
-   
-    res.send(diff);
-  } catch (err) {
-    console.error(err);
-    res.send(null);
+    try {
+      const data =  fs.writeFileSync(path.resolve(__dirname, '../stabs/productsDataBase.json'),jsonContent);
+      console.log(`file written successfully, data: ${data}`);
+      let productsFromDB = _getProductsFromDB(); 
+      let diff = { id:id,...productsFromDB[id], editMode:false};
+    
+      res.send(diff);
+    } catch (err) {
+      console.error(err);
+      throw new Error('fail post data') 
+    }
   }
 
 };
@@ -97,3 +102,29 @@ const toArray = (data)=>{
   })
   return arr;
 }
+
+const _isValidProductReq = (req) => {
+  if(req.body && req.body.id && 
+  req.body.unitManufacturingCost && 
+  req.body.shipmentUnitCost && 
+  req.body.monthlyAdvertismentCost && 
+  req.body.manufacturingCountry && 
+  !isNaN(req.body.unitManufacturingCost) &&  
+  !isNaN(req.body.shipmentUnitCost) &&
+  !isNaN(req.body.monthlyAdvertismentCost) && 
+  req.body.unitManufacturingCost > 0 &&
+  req.body.shipmentUnitCost > 0 && 
+  req.body.monthlyAdvertismentCost > 0 &&
+  countries && countries.length > 0 && _countryCodeExist(req.body.manufacturingCountry)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+const _countryCodeExist = (key) => {
+  return countries.find((elem) => {
+    if(elem.code === key) return true;
+  });
+}
+

@@ -1,5 +1,5 @@
 <template>
-  <div id='product'>
+  <div class='product-page'>
     <h1 class="title">{{title}}</h1>
     <div>
       <b-card v-for="(item,index) in products" :key="item.id"
@@ -8,94 +8,88 @@
         tag="article"
         class="mb-4">
         <!-- read only mode -->
-        <b-card-text
+        <b-card-text v-if="!item.editMode"
           :class="[`cardReadOnly${index}`]"
-          v-if="!item.editMode">
+         >
             <div>Manufacturing Cost: {{item.cogs.unitManufacturingCost | toCurrency}}</div>
             <div>ShipmentUnit Cost: {{item.cogs.shipmentUnitCost | toCurrency}}</div>
             <div>MonthlyAdvertisment Cost: {{item.cogs.monthlyAdvertismentCost | toCurrency}}</div>
             <div>Manufacturing Country: {{item.displayCountry}}</div>
+            <!--btn change to edit mode-->
+            <b-button :class="[`btnDisplayEditMode${index}`]"
+              v-on:click="item.editMode = !item.editMode"
+              variant="outline-primary">Display Edit Mode
+            </b-button>
         </b-card-text>
+
         <!-- edit mode -->
-        <b-card-text
-          :class="[`cardForm${index}`]"
-          v-if="item.editMode">
-            <b-form-group
-              id="fieldset-horizontal"
-              label-cols-sm="6"
-              label="Enter Unit Manufacturing Cost:"
-              label-for="input-unitManufacturingCost"
-            >
-              <b-form-input id="input-unitManufacturingCost"
-                placeholder="Enter Unit Manufacturing Cost"
-                v-model="item.cogs.unitManufacturingCost">
-              </b-form-input>
-            </b-form-group>
+        <b-card-text :class="[`cardForm${index}`]" v-else>
+            <b-form>
+              <b-form-group
+                label="Enter Unit Manufacturing Cost:"
+                label-for="input-unitManufacturingCost"
+              >
+                <b-form-input id="input-unitManufacturingCost"
+                  type="number"
+                  placeholder="Enter Unit Manufacturing Cost"
+                  v-model="item.cogs.unitManufacturingCost">
+                </b-form-input>
+              </b-form-group>
+              <b-form-group
+                label="Enter Shipment Unit Cost:"
+                label-for="input-shipmentUnitCost"
+              >
+                <b-form-input id="input-shipmentUnitCost"
+                  type="number"
+                  placeholder="Enter Shipment Unit Cost"
+                  v-model="item.cogs.shipmentUnitCost">
+                </b-form-input>
+              </b-form-group>
 
-            <b-form-group
-              id="fieldset-horizontal"
-              label-cols-sm="6"
-              label="Enter Shipment Unit Cost:"
-              label-for="input-shipmentUnitCost"
-            >
-              <b-form-input id="input-shipmentUnitCost"
-                placeholder="Enter Shipment Unit Cost"
-                v-model="item.cogs.shipmentUnitCost">
-              </b-form-input>
-            </b-form-group>
+              <b-form-group
+                label="Enter Monthly Advertisment Cost:"
+                label-for="input-monthlyAdvertismentCost"
+                >
+                <b-form-input id="input-monthlyAdvertismentCost"
+                  type="number"
+                  placeholder="Enter Monthly Advertisment Cost"
+                  v-model="item.cogs.monthlyAdvertismentCost">
+                </b-form-input>
+              </b-form-group>
 
-            <b-form-group
-              id="fieldset-horizontal"
-              label-cols-sm="6"
-              label="Enter Monthly Advertisment Cost:"
-              label-for="input-monthlyAdvertismentCost"
-            >
-              <b-form-input id="input-monthlyAdvertismentCost"
-                placeholder="Enter Monthly Advertisment Cost"
-                v-model="item.cogs.monthlyAdvertismentCost">
-              </b-form-input>
-            </b-form-group>
+              <b-form-group
+                label="Select A Manufacturing Country:"
+                label-for="input-monthlyAdvertismentCost"
+              >
+                <b-form-select class="mb-2" v-model="item.cogs.manufacturingCountry"
+                  :options="countries"
+                  value-field="code"
+                  type="text"
+                  text-field="name">
+                  <template #first>
+                    <b-form-select-option :value="null" disabled>-- Please select a country --</b-form-select-option>
+                  </template>
+                </b-form-select>
+              </b-form-group>
 
-            <b-form-group
-              id="fieldset-horizontal"
-              label-cols-sm="6"
-              label="Select A Manufacturing Country:"
-              label-for="input-monthlyAdvertismentCost"
-            >
-              <b-form-select class="mb-2" v-model="item.cogs.manufacturingCountry"
-                :options="countries"
-                value-field="code"
-                text-field="name">
-                <template #first>
-                  <b-form-select-option :value="null" disabled>-- Please select a country --</b-form-select-option>
-                </template>
-              </b-form-select>
-            </b-form-group>
+              <!--btn edit product submit post request-->
+              <b-button
+                v-on:click="editProduct(index, item)"
+                :class="[`btnEdit${index}`]"
+                variant="outline-primary">Edit Product
+              </b-button>
 
+              <!--btn back to read only without do nothing-->
+              <b-button
+                :class="[`btnBackToReadOnly${index}`]"
+                v-on:click="item.editMode = false"
+                variant="primary">Back
+              </b-button>
+
+               <b-alert v-if="validationError" show variant="danger">{{validationError}}</b-alert>
+
+            </b-form>
         </b-card-text>
-
-        <!--btn change to edit mode-->
-        <b-button :class="[`btnDisplayEditMode${index}`]"
-          v-if="!item.editMode"
-          v-on:click="item.editMode = !item.editMode"
-          variant="outline-primary">Display Edit Mode
-        </b-button>
-
-        <!--btn edit product post request-->
-        <b-button
-         :class="[`btnEdit${index}`]"
-          v-if="item.editMode"
-          v-on:click="editProduct(index, item)"
-          variant="outline-primary">Edit Product
-        </b-button>
-
-        <!--btn back to read only without do nothing-->
-        <b-button
-          :class="[`btnBackToReadOnly${index}`]"
-          v-if="item.editMode"
-          v-on:click="item.editMode = false"
-          variant="primary">Back
-        </b-button>
 
       </b-card>
     </div>
@@ -106,14 +100,14 @@
 import axios from 'axios'
 
 export default  {
-
-   data () {
+  data () {
     return {
       title: 'Product Page',
       products: [],
       countries: [],
       loading: true,
       hasError: false,
+      validationError: null
     }
   },
   filters: {
@@ -140,41 +134,58 @@ export default  {
       return (ret && ret.name) ? ret.name : ''
     },
     editProduct: function (i,item) {
-      console.log(`editProduct() index: ${i}, id: ${item.id}`);
+      this.validationError = null
+      console.log(`editProduct() index: ${i}`);
 
-      const product = {
-        id: item.id,
-        unitManufacturingCost: item.cogs.unitManufacturingCost,
-        shipmentUnitCost: item.cogs.shipmentUnitCost,
-        monthlyAdvertismentCost: item.cogs.monthlyAdvertismentCost,
-        manufacturingCountry: item.cogs.manufacturingCountry
-      };
+      if(item && item.cogs &&
+        item.cogs.unitManufacturingCost && item.cogs.unitManufacturingCost > 0 &&
+        !isNaN(item.cogs.unitManufacturingCost) &&
+        item.cogs.shipmentUnitCost && item.cogs.shipmentUnitCost > 0 &&
+        !isNaN(item.cogs.shipmentUnitCost) &&
+        item.cogs.monthlyAdvertismentCost && item.cogs.monthlyAdvertismentCost > 0 &&
+        !isNaN(item.cogs.monthlyAdvertismentCost) &&
+        item.cogs.manufacturingCountry
+      ) {
+        const product = {
+          id: item.id,
+          unitManufacturingCost: item.cogs.unitManufacturingCost,
+          shipmentUnitCost: item.cogs.shipmentUnitCost,
+          monthlyAdvertismentCost: item.cogs.monthlyAdvertismentCost,
+          manufacturingCountry: item.cogs.manufacturingCountry
+        };
 
-      axios.post("http://localhost:3000/cogs", product)
-        .then(response => {
-          console.log(response);
-          this.products[i].editMode = false;
-          if(response.data) {
-            this.products[i].cogs.unitManufacturingCost = response.data.cogs.unitManufacturingCost;
-            this.products[i].cogs.shipmentUnitCost = response.data.cogs.shipmentUnitCost;
-            this.products[i].cogs.monthlyAdvertismentCost = response.data.cogs.monthlyAdvertismentCost;
-            this.products[i].cogs.manufacturingCountry = response.data.cogs.manufacturingCountry;
-            this.products[i].displayCountry = this.getCountryObj(response.data.cogs.manufacturingCountry);
-          }
-        }).catch(errors => {
-          console.log(errors);
-          this.hasError = true;
-        })
-        .finally(() => {
+        console.log(JSON.stringify(product))
+
+        axios.post("http://localhost:3000/cogs", product)
+          .then(response => {
+            console.log(response);
+            this.products[i].editMode = false;
+            if(response.data) {
+              this.products[i].cogs.unitManufacturingCost = response.data.cogs.unitManufacturingCost;
+              this.products[i].cogs.shipmentUnitCost = response.data.cogs.shipmentUnitCost;
+              this.products[i].cogs.monthlyAdvertismentCost = response.data.cogs.monthlyAdvertismentCost;
+              this.products[i].cogs.manufacturingCountry = response.data.cogs.manufacturingCountry;
+              this.products[i].displayCountry = this.getCountryObj(response.data.cogs.manufacturingCountry);
+            }
+          }).catch(errors => {
+            console.log(errors);
+            this.hasError = true;
+          })
+          .finally(() => {
             console.log('editProduct finally');
             this.loading = false;
-      });
+        });
+      } else {
+        this.validationError = 'form validate error'
+      }
     },
   },
-  mounted: async function() {
+  beforeMount: async function() {
+    console.log('created')
     this.loading = true;
 
     try{
+
       let resProducts = await axios.get('http://localhost:3000/products');
       let resCountries = await axios.get('http://localhost:3000/countries');
 

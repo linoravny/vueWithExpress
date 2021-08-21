@@ -299,7 +299,7 @@ afterEach(() => {
 
 describe('Product',  () => {
 
-  it('click display edit mode button remove and add elements to the dom', async () => {
+  it('click display edit mode button: remove and add elements to the dom', async () => {
     await wrapper.find('.btnDisplayEditMode0').trigger('click')
 
     expect(wrapper.find('.btnDisplayEditMode0').exists()).toBe(false)
@@ -313,30 +313,46 @@ describe('Product',  () => {
   it('get country name by key', async () => {
     let countryName;
     countryName = wrapper.vm.getCountryObj('AF');
+    countryName = wrapper.vm.getCountryObj('AAA');
     countryName = wrapper.vm.getCountryObj();
     countryName = wrapper.vm.getCountryObj(2);
     countryName = wrapper.vm.getCountryObj(null);
     // console.log(`country name: ${countryName}`);
   })
 
-  it('post product', async () => {
+  it('post product with valid req', async () => {
     //check object not form valid, null, empty properties, null
     const postProductItem = {
       id: 'B08QPPGNNZ',
       cogs: {
-        unitManufacturingCost: 11,
-        shipmentUnitCost: 22,
-        monthlyAdvertismentCost: 33,
+        unitManufacturingCost: 9,
+        shipmentUnitCost: 2222,
+        monthlyAdvertismentCost: 33333,
         manufacturingCountry: 'AS'
       }
-
     };
     wrapper.vm.editProduct(0,postProductItem);
-    // console.log(JSON.stringify(postProductItem));
   })
 
-    // it('filter number currency', async () => {
-    //check number type, falsy(0,null, undefined,...)
+  it('post product with unvalid req', async () => {
+    //check object not form valid, null, empty properties, null
+    const postProductItem = {
+      id: 'B08QPPGNNZ',
+      cogs: {
+        unitManufacturingCost: -9,
+        shipmentUnitCost: null,
+        monthlyAdvertismentCost: "999",
+        manufacturingCountry: 'ASAS'
+      }
+    };
+    wrapper.vm.editProduct(0,postProductItem);
+  })
+
+  // it('filter number by currency for display mode', async () => {
+  //   // check number type, falsy(0,null, undefined,...)
+  //   let numberCurrency;
+  //   // numberCurrency =  wrapper.vm.toCurrency(40);
+  //   // console.log(`number with currency filter: ${numberCurrency}`);
 
   // })
 
