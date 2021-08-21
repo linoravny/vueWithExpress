@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid class='product-page'>
+  <b-container fluid="sm" class='product-page'>
     <h1 class="title">{{title}}</h1>
     <b-row>
       <b-col>
@@ -40,68 +40,71 @@
                 size="sm"
                 variant="link">Back to read only mode
               </b-button>
+              <b-row>
+                <b-col md="6" offset-md="3">
+                  <b-form>
+                    <b-form-group class="mb-3"
+                      label="Enter Unit Manufacturing Cost:"
+                      label-for="input-unitManufacturingCost"
+                    >
+                      <b-form-input id="input-unitManufacturingCost"
+                        type="number"
+                        placeholder="Enter Unit Manufacturing Cost"
+                        v-model="item.cogs.unitManufacturingCost">
+                      </b-form-input>
+                    </b-form-group>
 
-              <b-form>
-                <b-form-group class="mb-3"
-                  label="Enter Unit Manufacturing Cost:"
-                  label-for="input-unitManufacturingCost"
-                >
-                  <b-form-input id="input-unitManufacturingCost"
-                    type="number"
-                    placeholder="Enter Unit Manufacturing Cost"
-                    v-model="item.cogs.unitManufacturingCost">
-                  </b-form-input>
-                </b-form-group>
+                    <b-form-group class="mb-3"
+                      label="Enter Shipment Unit Cost:"
+                      label-for="input-shipmentUnitCost"
+                    >
+                      <b-form-input id="input-shipmentUnitCost"
+                        type="number"
+                        placeholder="Enter Shipment Unit Cost"
+                        v-model="item.cogs.shipmentUnitCost">
+                      </b-form-input>
+                    </b-form-group>
 
-                <b-form-group class="mb-3"
-                  label="Enter Shipment Unit Cost:"
-                  label-for="input-shipmentUnitCost"
-                >
-                  <b-form-input id="input-shipmentUnitCost"
-                    type="number"
-                    placeholder="Enter Shipment Unit Cost"
-                    v-model="item.cogs.shipmentUnitCost">
-                  </b-form-input>
-                </b-form-group>
+                    <b-form-group class="mb-3"
+                      label="Enter Monthly Advertisment Cost:"
+                      label-for="input-monthlyAdvertismentCost"
+                      >
+                      <b-form-input id="input-monthlyAdvertismentCost"
+                        type="number"
+                        placeholder="Enter Monthly Advertisment Cost"
+                        v-model="item.cogs.monthlyAdvertismentCost">
+                      </b-form-input>
+                    </b-form-group>
 
-                <b-form-group class="mb-3"
-                  label="Enter Monthly Advertisment Cost:"
-                  label-for="input-monthlyAdvertismentCost"
-                  >
-                  <b-form-input id="input-monthlyAdvertismentCost"
-                    type="number"
-                    placeholder="Enter Monthly Advertisment Cost"
-                    v-model="item.cogs.monthlyAdvertismentCost">
-                  </b-form-input>
-                </b-form-group>
+                    <b-form-group class="mb-3"
+                      label="Select A Manufacturing Country:"
+                      label-for="input-monthlyAdvertismentCost"
+                    >
+                      <b-form-select v-model="item.cogs.manufacturingCountry"
+                      class="w-100"
+                        :options="countries"
+                        value-field="code"
+                        type="text"
+                        text-field="name">
+                        <template #first>
+                          <b-form-select-option :value="null" disabled>-- Please select a country --</b-form-select-option>
+                        </template>
+                      </b-form-select>
+                    </b-form-group>
 
-                <b-form-group class="mb-3"
-                  label="Select A Manufacturing Country:"
-                  label-for="input-monthlyAdvertismentCost"
-                >
-                  <b-form-select v-model="item.cogs.manufacturingCountry"
-                  class="w-100"
-                    :options="countries"
-                    value-field="code"
-                    type="text"
-                    text-field="name">
-                    <template #first>
-                      <b-form-select-option :value="null" disabled>-- Please select a country --</b-form-select-option>
-                    </template>
-                  </b-form-select>
-                </b-form-group>
-
-                <!--btn edit product submit post request-->
-                <b-button
-                  v-on:click="editProduct(index, item)"
-                  :class="[`btnEdit${index}`]"
-                  variant="outline-success">Edit Product
-                </b-button>
+                    <!--btn edit product submit post request-->
+                    <b-button class="mb-3"
+                      v-on:click="editProduct(index, item)"
+                      :class="[`btnEdit${index}`]"
+                      variant="outline-success">Edit Product
+                    </b-button>
 
 
-                <b-alert v-if="validationError" show variant="danger">{{validationError}}</b-alert>
+                    <b-alert v-if="validationError" show variant="danger">{{validationError}}</b-alert>
 
-              </b-form>
+                  </b-form>
+                </b-col>
+              </b-row>
           </b-card-text>
 
         </b-card>
